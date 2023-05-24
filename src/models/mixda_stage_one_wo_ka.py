@@ -16,7 +16,7 @@ import datasets
 from datasets import Dataset
 
 
-class MoDAdapterAblation(LightningModule):
+class MixDAAdapterAblation(LightningModule):
     @staticmethod
     def add_model_specific_args(parent_parser):
         parser = ArgumentParser(parents=[parent_parser], add_help=False)

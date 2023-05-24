@@ -42,7 +42,7 @@ class MixtureOfDomainAdapter(nn.Module):
         return output
     
 # Attention Layer for Transformer outputs + mixture-of-domain adapters
-class MoDAttentionLayer(nn.Module):
+class MixDAAttentionLayer(nn.Module):
     def __init__(self, config):
         super().__init__()
         kdim = config.hidden_size

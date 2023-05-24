@@ -22,7 +22,7 @@ from ..data.tok_dataset import TokenizedDataset
 from datasets import load_dataset
 
 
-class MoDClassification(LightningModule):
+class MixDAClassification(LightningModule):
     @staticmethod
     def add_model_specific_args(parent_parser):
         parser = ArgumentParser(parents=[parent_parser], add_help=False)

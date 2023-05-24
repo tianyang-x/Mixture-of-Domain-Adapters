@@ -19,7 +19,7 @@ from itertools import chain
 from ..realm.realm import RealmRetriever
 
 
-class MoDStageOneMLM(LightningModule):
+class MixDAStageOneMLM(LightningModule):
     @staticmethod
     def add_model_specific_args(parent_parser):
         parser = ArgumentParser(parents=[parent_parser], add_help=False)

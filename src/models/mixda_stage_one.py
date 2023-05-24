@@ -16,7 +16,7 @@ import numpy as np
 from copy import deepcopy
 from ..realm.realm import RealmRetriever
 
-class MoDStageOne(LightningModule):
+class MixDAStageOne(LightningModule):
     @staticmethod
     def add_model_specific_args(parent_parser):
         parser = ArgumentParser(parents=[parent_parser], add_help=False)
