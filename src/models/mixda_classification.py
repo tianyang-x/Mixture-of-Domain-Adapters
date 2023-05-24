@@ -228,7 +228,7 @@ class MixDAClassification(LightningModule):
                 all_texts_str = '</s>'.join(all_texts)
                 batch['text'][i] = all_texts_str + '</s>' + batch['text'][i]
         
-        all_rome_weights = []
+        all_mixda_weights = []
         moe_layers = ['roberta.encoder.layer.{}.output.gating'.format(layer) for layer in self.hparams.layers] if not self.hparams.disable_moe else []
         with utils.TraceDict(
             module=self.model,
@@ -241,7 +241,7 @@ class MixDAClassification(LightningModule):
             for layer in self.hparams.layers:
                 weights = tr['roberta.encoder.layer.{}.output.gating'.format(layer)].output[:,:,0]
                 for w in weights:
-                    all_rome_weights.append(w.item())
+                    all_mixda_weights.append(w.item())
 
         cr = self.ce(logits, label)
 
@@ -258,10 +258,10 @@ class MixDAClassification(LightningModule):
             "train_f1", self.train_f1, on_step=True, on_epoch=False, prog_bar=True, batch_size=self.hparams.batch_size
         )
         self.log(
-            "rome_weights_mean", np.mean(all_rome_weights), on_step=True, on_epoch=False, prog_bar=True, batch_size=self.hparams.batch_size
+            "mixda_weights_mean", np.mean(all_mixda_weights), on_step=True, on_epoch=False, prog_bar=True, batch_size=self.hparams.batch_size
         )
         self.log(
-            "rome_weights_std", np.std(all_rome_weights), on_step=True, on_epoch=False, prog_bar=True, batch_size=self.hparams.batch_size
+            "mixda_weights_std", np.std(all_mixda_weights), on_step=True, on_epoch=False, prog_bar=True, batch_size=self.hparams.batch_size
         )
 
         return {"loss": loss, "logits": logits}
@@ -285,7 +285,7 @@ class MixDAClassification(LightningModule):
                 all_texts_str = '</s>'.join(all_texts)
                 batch['text'][i] = all_texts_str + '</s>' + batch['text'][i]
         
-        all_rome_weights = []
+        all_mixda_weights = []
         moe_layers = ['roberta.encoder.layer.{}.output.gating'.format(layer) for layer in self.hparams.layers] if not self.hparams.disable_moe else []
         with utils.TraceDict(
             module=self.model,
@@ -298,7 +298,7 @@ class MixDAClassification(LightningModule):
             for layer in self.hparams.layers:
                 weights = tr['roberta.encoder.layer.{}.output.gating'.format(layer)].output[:,:,0]
                 for w in weights:
-                    all_rome_weights.append(w.item())
+                    all_mixda_weights.append(w.item())
 
         self.valid_acc.update(logits.sigmoid(), label)
         self.log(
@@ -309,10 +309,10 @@ class MixDAClassification(LightningModule):
             "valid_f1", self.valid_f1, on_step=True, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
         )
         self.log(
-            "val_rome_weights_mean", np.mean(all_rome_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
+            "val_mixda_weights_mean", np.mean(all_mixda_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
         )
         self.log(
-            "val_rome_weights_std", np.std(all_rome_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
+            "val_mixda_weights_std", np.std(all_mixda_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
         )
 
         return {"logits": logits}
@@ -363,7 +363,7 @@ class MixDAClassification(LightningModule):
         valid_f1, valid_acc = self.valid_f1.compute(), self.valid_acc.compute()
             
         if self.test_dataset is not None:
-            all_rome_weights = []
+            all_mixda_weights = []
             for batch in self.test_dataloader():
                 text, label = batch['text'], torch.LongTensor(batch['label']).to(self.device)
                 tok = self.tokenizer(text, padding=True, truncation=True, return_tensors='pt').to(self.device)
@@ -393,7 +393,7 @@ class MixDAClassification(LightningModule):
                     for layer in self.hparams.layers:
                         weights = tr['roberta.encoder.layer.{}.output.gating'.format(layer)].output[:,:,0]
                         for w in weights:
-                            all_rome_weights.append(w.item())
+                            all_mixda_weights.append(w.item())
 
                 self.test_acc(logits.sigmoid(), label)
                 self.log(
@@ -404,10 +404,10 @@ class MixDAClassification(LightningModule):
                     "test_f1", self.test_f1, on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
                 )
             self.log(
-                "test_rome_weights_mean", np.mean(all_rome_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
+                "test_mixda_weights_mean", np.mean(all_mixda_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
             )
             self.log(
-                "test_rome_weights_std", np.std(all_rome_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
+                "test_mixda_weights_std", np.std(all_mixda_weights), on_step=False, on_epoch=True, prog_bar=True, batch_size=self.hparams.batch_size
         )
             
         if self.test_acc < self.best_test_metrics['acc']:

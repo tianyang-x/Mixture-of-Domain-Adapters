@@ -60,7 +60,7 @@ from transformers.modeling_utils import (
 )
 from transformers.utils import logging
 from .configuration_bert import BertConfig
-from .rome import *
+from ..mixda_adapter import *
 
 
 logger = logging.get_logger(__name__)

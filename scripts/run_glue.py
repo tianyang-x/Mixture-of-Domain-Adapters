@@ -199,7 +199,7 @@ def parse_args():
         help="Whether or not to enable to load a pretrained model whose head dimensions are different.",
     )
     parser.add_argument(
-        "--load_romes",
+        "--load_mixda",
         type=str,
         help="Load ROME knowledge adapter."
     )
@@ -362,8 +362,8 @@ def main():
     #
     # In distributed training, the .from_pretrained methods guarantee that only one local process can concurrently
     # download model & vocab.
-    romes = args.load_romes.split(',') if args.load_romes is not None else []
-    config = RobertaConfig.from_pretrained(args.model_name_or_path, num_labels=num_labels, finetuning_task=args.task_name, layers=args.layers, enable_attention=True, enable_old_ka=True, num_of_kas=len(romes), disable_moe=args.disable_moe,)
+    mixdas = args.load_mixda.split(',') if args.load_mixda is not None else []
+    config = RobertaConfig.from_pretrained(args.model_name_or_path, num_labels=num_labels, finetuning_task=args.task_name, layers=args.layers, enable_attention=True, enable_old_ka=True, num_of_kas=len(mixdas), disable_moe=args.disable_moe,)
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, use_fast=not args.use_slow_tokenizer)
     model = RobertaForSequenceClassification.from_pretrained(
         args.model_name_or_path,
@@ -371,9 +371,9 @@ def main():
     )
     
     # Add adapter and load knowledge adapter
-    if args.load_romes != '' and args.load_romes is not None:
-        romes = args.load_romes.split(',')
-        model.load_knowledge_adapter(romes)
+    if args.load_mixda != '' and args.load_mixda is not None:
+        mixdas = args.load_mixda.split(',')
+        model.load_knowledge_adapter(mixdas)
         print('ROME loaded!!1')
     else:
         print('Disabling parallel knowledge adapter')
@@ -749,7 +749,7 @@ def main():
         model.eval()
         samples_seen = 0
         moe_layers = ['roberta.encoder.layer.{}.output.gating'.format(layer) for layer in args.layers] if not args.disable_moe else []
-        all_rome_weights = []
+        all_mixda_weights = []
         for step, batch in enumerate(eval_dataloader):
             if sentence2_key is None:
                 tok = tokenizer(
@@ -794,7 +794,7 @@ def main():
                 for layer in args.layers:
                     weights = tr['roberta.encoder.layer.{}.output.gating'.format(layer)].output[:,:,0]
                     for w in weights:
-                        all_rome_weights.append(w.item())
+                        all_mixda_weights.append(w.item())
             predictions = outputs.logits.argmax(dim=-1) if not is_regression else outputs.logits.squeeze()
             predictions, references = accelerator.gather((predictions, batch["labels"]))
             # If we are in a multiprocess environment, the last batch has duplicates
@@ -810,7 +810,7 @@ def main():
             )
 
         eval_metric = metric.compute()
-        logger.info(f"epoch {epoch}: {eval_metric}, rome_weights: {np.mean(all_rome_weights)} +- {np.std(all_rome_weights)}")
+        logger.info(f"epoch {epoch}: {eval_metric}, mixda_weights: {np.mean(all_mixda_weights)} +- {np.std(all_mixda_weights)}")
         
         # for m in metrics:
         #     best_metrics[m] = max(best_metrics[m], eval_metric[m])
@@ -822,8 +822,8 @@ def main():
                     "train_loss": total_loss.item() / len(train_dataloader),
                     "epoch": epoch,
                     "step": completed_steps,
-                    'rome_weights_mean': np.mean(all_rome_weights),
-                    'rome_weights_std': np.std(all_rome_weights),
+                    'mixda_weights_mean': np.mean(all_mixda_weights),
+                    'mixda_weights_std': np.std(all_mixda_weights),
                 },
                 step=completed_steps,
             )
