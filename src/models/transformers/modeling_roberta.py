@@ -55,7 +55,7 @@ from transformers.modeling_utils import (
 )
 from transformers.utils import logging
 from .configuration_roberta import RobertaConfig
-from .rome import *
+from ..mixda_adapter import *
 
 
 logger = logging.get_logger(__name__)

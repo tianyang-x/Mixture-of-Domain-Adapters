@@ -11,9 +11,9 @@ from pytorch_lightning.strategies.ddp import DDPStrategy
 import sys
 import cProfile
 
-from src.models.mod_stage_one_mlm import MoDStageOneMLM
-from src.models.mod_classification import MoDClassification
-from src.models.mod_stage_one_wo_ka import MoDAdapterAblation
+from src.models.mixda_stage_one_mlm import MixDAStageOneMLM
+from src.models.mixda_classification import MixDAClassification
+from src.models.mixda_stage_one_wo_ka import MixDAAdapterAblation
 import wandb
 
 if __name__ == "__main__":
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     parser.add_argument("--project_name", type=str, default="add-fever-complete")
     parser.add_argument("--run_name", type=str, default="test")
 
-    parser = MoDStageOneMLM.add_model_specific_args(parser)
+    parser = MixDAStageOneMLM.add_model_specific_args(parser)
     parser = Trainer.add_argparse_args(parser)
 
     args, _ = parser.parse_known_args()
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         num_sanity_val_steps=0
     )
 
-    model = MoDStageOneMLM(**vars(args))
+    model = MixDAStageOneMLM(**vars(args))
 
     trainer.fit(model)
     

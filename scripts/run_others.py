@@ -11,10 +11,10 @@ from pytorch_lightning.strategies.ddp import DDPStrategy
 import sys
 import cProfile
 
-from src.models.mod_stage_one import MoDStageOne
-import src.models.mod_stage_one_mlm
-from src.models.mod_classification import MoDClassification
-from src.models.mod_stage_one_wo_ka import MoDAdapterAblation
+from src.models.mixda_stage_one import MixDAStageOne
+import src.models.mixda_stage_one_mlm
+from src.models.mixda_classification import MixDAClassification
+from src.models.mixda_stage_one_wo_ka import MixDAAdapterAblation
 import wandb
 
 if __name__ == "__main__":
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument("--train_task", type=str, default='classification',
                         choices=['classification', 'pretrain', 'pretrain_mlm'])
 
-    parser = MoDClassification.add_model_specific_args(parser)
+    parser = MixDAClassification.add_model_specific_args(parser)
     parser = Trainer.add_argparse_args(parser)
 
     args, _ = parser.parse_known_args()
@@ -53,11 +53,11 @@ if __name__ == "__main__":
     )
 
     if args.train_task == 'classification':
-        model = MoDClassification(**vars(args))
+        model = MixDAClassification(**vars(args))
     elif args.train_task == 'pretrain':
-        model = MoDStageOne(**vars(args))
+        model = MixDAStageOne(**vars(args))
     else:
-        model = src.models.mod_stage_one_mlm.MoDStageOneMLM(**vars(args))
+        model = src.models.mixda_stage_one_mlm.MixDAStageOneMLM(**vars(args))
 
     trainer.fit(model)
     
