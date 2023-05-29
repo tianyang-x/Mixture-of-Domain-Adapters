@@ -15,7 +15,7 @@ from torchmetrics import F1Score, Accuracy
 from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
-from pytorch_lightning.utilities.seed import seed_everything
+from pytorch_lightning import seed_everything
 import wandb
 from transformers.adapters.configuration import HoulsbyConfig, PfeifferConfig
 import sys
@@ -298,7 +298,7 @@ if __name__ == "__main__":
         args, 
         logger=logger, 
         callbacks=callbacks,
-        strategy = DDPStrategy(find_unused_parameters=True),
+        strategy='ddp',
         num_sanity_val_steps=0
     )
 

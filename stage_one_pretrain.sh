@@ -2,6 +2,7 @@
 
 # This script is used for Stage 1 pretraining of MixDA.
 # You can specify the following parameters.
+# Example: bash stage_one_pretrain.sh model/test datasets/amazon/train.json test-project 20 1 3 1e-4 2e-4 "" 0
 
 dirname=$1 # the directory to save the pre-trained model
 knowledge_path=$2 # path to domain knowledge
@@ -12,10 +13,10 @@ batch_size=$6 # batch size
 lr=$7 # learning rate
 moa_lr=$8 # learning rate for MoA
 realm_record=$9 # path to the REALM record used for information retrieval. Ignore it to disable it
-no_old_knowledge=$10 # set it to 1 if you want to disale old domain knowledge
+no_old_knowledge=${10} # set it to 1 if you want to disale old domain knowledge
 
 other_params=""
-if [[ $no_old_knowledge -eq 1 ]]; then
+if [[ $no_old_knowledge == 1 ]]; then
     other_params="--no_old_knowledge"
 fi
 if [[ $realm_record != "" ]]; then
@@ -34,7 +35,6 @@ python -m scripts.run_stage_one \
     --dirpath ${dirname} \
     --lr ${lr} \
     --moe_lr ${moa_lr} \
-    --adapter_down_scale 16
-    --realm_record ${realm_record} \
+    --adapter_down_scale 16 \
     ${other_params}
 

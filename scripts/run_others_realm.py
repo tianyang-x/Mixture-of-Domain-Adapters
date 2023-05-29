@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from pytorch_lightning import Trainer
 from pytorch_lightning.callbacks import LearningRateMonitor, ModelCheckpoint
 from pytorch_lightning.loggers import WandbLogger
-from pytorch_lightning.utilities.seed import seed_everything
+from pytorch_lightning import seed_everything
 from pytorch_lightning.strategies.ddp import DDPStrategy
 
 import sys
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         args, 
         logger=logger, 
         callbacks=callbacks,
-        strategy = DDPStrategy(find_unused_parameters=True),
+        strategy='ddp',
         num_sanity_val_steps=0
     )
 

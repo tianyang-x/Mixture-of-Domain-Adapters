@@ -53,7 +53,6 @@ import wandb
 from datasets import Dataset
 
 import sys
-sys.path.append('/home/nlpintern/xty/KnowledgeEditor')
 from src import utils
 
 from src.models.transformers import RobertaForSequenceClassification, RobertaConfig
