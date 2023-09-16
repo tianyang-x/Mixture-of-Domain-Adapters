@@ -729,6 +729,14 @@ class RobertaPreTrainedModel(PreTrainedModel):
             for i, layer in enumerate(encoder.layer):
                 if str(i) + '-adapter' in checkpoint:
                     layer.output.kas[n_ka].load_state_dict(checkpoint[str(i) + '-adapter'])
+                ka_temp = 0
+                while True:
+                    if str(i) + '-' + str(ka_temp) + '-adapter' in checkpoint:
+                        layer.output.kas[n_ka].load_state_dict(
+                            checkpoint[str(i) + '-' + str(ka_temp) + '-adapter'])
+                        ka_temp += 1
+                    else:
+                        break
                 # if str(i) + '-attn' in checkpoint:
                     # layer.output.attn.load_state_dict(checkpoint[str(i) + '-attn'])
                 if str(i) + '-gating' in checkpoint and len(f_list) == 1 and layer.output.gating is not None:

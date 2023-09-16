@@ -285,7 +285,6 @@ if __name__ == "__main__":
     if args.seed is not None:
         seed_everything(seed=args.seed)
 
-    wandb.login(key='710f9ed51f388218c59dda998f08db93f481da29')
     logger = WandbLogger(project=args.project_name, name=args.run_name, entity='amano-aki')
 
     callbacks = [

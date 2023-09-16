@@ -277,7 +277,6 @@ def parse_args():
 
 
 def main():
-    wandb.login(key='710f9ed51f388218c59dda998f08db93f481da29')
     args = parse_args()
 
     # Initialize the accelerator. We will let the accelerator handle device placement for us in this example.
