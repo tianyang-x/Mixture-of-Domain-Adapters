@@ -30,8 +30,16 @@ You can modify the code to accommodate the model to your dataset.
 ## Running the Code
 Please refer to instructions in `stage_one_pretrain.sh` and `stage_two.sh`, which give examples on how to execute Stage 1 and Stage 2 training respectively.
 
-## Credits
-Please cite the paper if you find the software useful. 😊
+## Citation
+If you use or extend our work, please cite the following [paper](https://arxiv.org/abs/2306.05406):
+```
+@article{diao2023mixture,
+  title={Mixture-of-Domain-Adapters: Decoupling and Injecting Domain Knowledge to Pre-trained Language Models Memories},
+  author={Diao, Shizhe and Xu, Tianyang and Xu, Ruijia and Wang, Jiawei and Zhang, Tong},
+  journal={arXiv preprint arXiv:2306.05406},
+  year={2023}
+}
+```
 
 ## Questions?
-Please raise your questions in the issue or direct them to `tianyangxu@whu.edu.cn` (previous email when the article was published) or `xu1868@purdue.edu` (current email).
+Please raise your questions in the issue or direct them to `xu1868@purdue.edu`.
